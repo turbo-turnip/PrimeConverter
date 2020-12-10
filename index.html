@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Prime Number Finder — enter a number and get all the primes that add up to the number</title>
+	<meta charset="utf-8">
+	<meta name="description" content="enter a number and get a list of all the prime numbers that add up to the number!">
+	<link href="https://fonts.googleapis.com/css2?family=Acme&display=swap" rel="stylesheet"> 
+	<link rel="shortcut icon" type="img/svg" href="./shortcut.svg">
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+			font-family: 'Acme';
+		}
+		body {
+			background: #d6d6d6;
+			display: flex;
+			height: 100vh;
+		}
+		.primeForm {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			width: 310px;
+			height: max-content;
+			filter: drop-shadow(6px 6px 3px #00000070)
+					drop-shadow(-6px -6px 3px #ffffff70);
+			background: #d6d6d6;
+			border-radius: 30px;
+			display: flex;
+			justify-content: center;
+			align-items: flex-start;
+			flex-direction: column;
+			padding: 30px 20px;
+		}
+		.output-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 80%;
+			height: max-content;
+			text-align: center;
+			flex-direction: column;
+			position: absolute;
+			top: 30px;
+			left: 50%;
+			transform: translateX(-50%);
+		}
+		.output-container h4,
+		.output-container h3,
+		.output-container h1 {
+			color: #d6d6d6;
+			filter: drop-shadow(2px 2px 3px #00000056)
+					drop-shadow(-2px -2px 3px #00000050);
+		}
+		.primeForm input {
+			width: 100%;
+			height: 36px;
+			background: #fff;
+			border: 1px solid #c3c3c3;
+			border-radius: 500px;
+			padding: 10px;
+			font-size: 1.12rem;
+		}
+		.primeForm label {
+			font-size: 1.20em;
+			text-align: center;
+			margin: 8px auto;
+		}
+		.primeForm button[type=submit] {
+			width: 50%;
+			height: 26px;
+			border-radius: 500px;
+			margin: 20px auto;
+			border: none;
+			filter: drop-shadow(2px 2px 3px #00000070)
+					drop-shadow(-2px -2px 3px #00000025);
+			font-size: 1.2rem;
+			padding: 5px;
+			box-sizing: content-box;
+			cursor: pointer;
+			background: #d3d3d3;
+		}
+		.primeForm button[type=submit]:hover {
+			filter: drop-shadow(1px 1px 2px #00000035)
+					drop-shadow(-1px -1px 3px #00000010);
+		}
+	</style>
+</head>
+<body>
+	<form class='primeForm'>
+			<label>Enter a number between 1 and 100</label>
+			<input type="text" name="input" class="input" placeholder="e.g. 62" autocomplete="off" />
+			<button type="submit">Submit</button>
+	</form>
+
+	<div class="output-container">
+		<h4 class="output1"></h4>
+		<h1 class="output2"></h1>
+		<h3 class="output3"></h3>
+	</div>
+
+	<audio class="error" src="./error_sound_effect.mp3"></audio>
+	<audio class="correct" src="./correct_effect.mp3"></audio>
+
+	<script type="text/javascript">
+		const form = document.querySelector(".primeForm");
+		const input = form.querySelector(".input");
+		const output1 = document.querySelector(".output1");
+		const output2 = document.querySelector(".output2");
+		const output3 = document.querySelector(".output3");
+
+		let submitCount = 0;
+
+		let primeNumbers = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199];
+		form.addEventListener("submit", (e) => {
+			e.preventDefault();
+
+			output1.innerHTML = "";
+			output2.innerHTML = "";
+			output3.innerHTML = "";
+
+			const val = parseInt(input.value);
+			if (input.value == "" || input.value == "undefined" || input.value == "<empty string>") {
+				output1.innerHTML = "sorry, you can't just type nothing.";
+				console.log("sorry, you can't just type nothing.");
+				document.querySelector(".error").play();
+			} else if (!val && val !== 0) {
+				output1.innerHTML = "sorry, " + input.value + " is not a number. try putting the number before the word.";
+				console.log("sorry, " + input.value + " is not a number. try putting the number before the word.");
+				document.querySelector(".error").play();
+			} else if (val > 100) {
+				output1.innerHTML = "sorry, you can't enter numbers higher than 100.";
+				console.log("sorry, you can't enter numbers higher than 100.");
+				document.querySelector(".error").play();
+			} else if (val < 1) {
+				output1.innerHTML = "sorry, you can't enter numbers lower than 1.";
+				console.log("sorry, you can't enter numbers lower than 1.");
+				document.querySelector(".error").play();
+			} else {
+				output1.innerHTML = "You typed in: " + val + "<br>";
+				console.log("You typed in: " + val);
+				output2.innerHTML += "All the prime numbers between 1 and " + val + " are ";
+				if (val == 1) {
+					output2.innerHTML = "1 is not a prime number and doesn't have any prime numbers between it...";
+				}
+
+				document.querySelector(".correct").play();
+
+				for (let i = 0; i < primeNumbers.length; i++) {
+					if (primeNumbers[i] <= val) {
+						output2.innerHTML += primeNumbers[i] + ", ";
+	 				}
+	 				if (primeNumbers[i] == val) {
+	 					output3.innerHTML = "The number you entered is a prime number!";
+	 				}
+				}
+				const outputWithoutComma = output2.innerHTML.substring(0, output2.innerHTML.length - 2);
+				output2.innerHTML = outputWithoutComma;
+			}
+		});
+	</script>
+</body>
+</html>
